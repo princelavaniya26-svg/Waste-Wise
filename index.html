@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>WasteWise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header><div class="bar">
+<button class="logo" data-go="home" aria-label="WasteWise home">Waste<span>Wise</span></button>
+<nav aria-label="Main">
+<button data-go="report">Report Issue</button><button data-go="track">Track Complaint</button><button data-go="hot">Hotspot Dashboard</button><button data-go="guide">Recycling Guide</button><button data-go="admin" title="For authorized reviewers only">Reviewer</button>
+</nav></div></header>
+ 
+<main>
+<section class="view hero" id="v-home">
+<h1>Turn waste reports into cleaner streets.</h1>
+<p>WasteWise turns individual waste reports into actionable insight. Report a problem in a minute, follow it to resolution, and show cleanup teams exactly where trouble keeps coming back.</p>
+<button class="btn" data-go="report">Report an issue</button> <button class="btn alt" data-go="hot">See hotspots</button>
+<div class="stats" id="home-stats" aria-live="polite"></div>
+<ol class="flow">
+<li><b>Report</b><small>Pick a category, add a location and an optional photo.</small></li>
+<li><b>Track</b><small>Use your complaint ID to check live status.</small></li>
+<li><b>Prioritize</b><small>Locations with repeat reports rise to the top.</small></li>
+<li><b>Resolve</b><small>Reviewers move each complaint to Resolved.</small></li>
+</ol>
+</section>
+ 
+<section class="view" id="v-report">
+<div class="head"><h2>Report an issue</h2><p class="why">Why it matters: every report adds a data point. Specific locations and short descriptions help crews find the problem fast, and repeat reports reveal hotspots.</p></div>
+<form class="card" id="f" novalidate>
+<label>Issue category
+<select id="cat" required><option value="">Choose a category</option><option>Overflowing bin</option><option>Garbage pile / illegal dumping</option><option>Missed collection</option><option>Other</option></select>
+<span class="err" id="e-cat"></span></label>
+<label>Location / area<span class="help">Be specific, e.g. "Main Canteen, rear gate". Matching names group into hotspots.</span>
+<input id="loc" required autocomplete="off"><span class="err" id="e-loc"></span></label>
+<label>Description<textarea id="desc" rows="4" required placeholder="What is the problem and how long has it been there?"></textarea><span class="err" id="e-desc"></span></label>
+<label>Photo <span class="help">Optional. A clear photo speeds up review.</span><input type="file" id="photo" accept="image/*"></label>
+<button class="btn" type="submit">Submit report</button>
+</form>
+<div class="card ok" id="ok" hidden tabindex="-1" role="status">
+<p style="margin:0">Report submitted. Your complaint ID is</p><div class="cid" id="newid"></div>
+<p class="sub">Save this ID to check progress later.</p>
+<button class="btn alt sm" id="trk">Track this complaint</button></div>
+</section>
+ 
+<section class="view" id="v-track">
+<div class="head"><h2>Track a complaint</h2><p class="why">Why it matters: you can see whether your report has been seen and acted on without chasing anyone.</p></div>
+<form class="row" id="tf" style="max-width:560px"><input id="tid" aria-label="Complaint ID" placeholder="Enter your ID, e.g. WW-8492" autocomplete="off"><button class="btn" type="submit">Find complaint</button></form>
+<p class="sub">Sample IDs to try: WW-8492, WW-7310, WW-6025</p>
+<div id="tres" style="max-width:620px;margin-top:12px" aria-live="polite"></div>
+</section>
+ 
+<section class="view" id="v-hot">
+<div class="head"><h2>Hotspot dashboard</h2><p class="why">Why it matters: one overflowing bin is a task, but the same spot reported five times is a pattern. Locations are ranked by unresolved reports so teams fix root causes first.</p></div>
+<div class="metrics" id="metrics"></div>
+<div class="card"><h3 style="margin-bottom:4px">Ranked problem locations</h3><p class="sub" style="margin:0">Bar length shows open reports as a share of the busiest location.</p><ol class="hs" id="hs"></ol></div>
+</section>
+ 
+<section class="view" id="v-admin">
+<div class="head"><h2>Reviewer console</h2><p class="why">Why it matters: reviewers close the loop. Each status change shows up immediately for the person who reported it and in the hotspot ranking.</p></div>
+<div id="gate" class="card" style="max-width:420px"><form id="af" class="row"><input id="code" type="password" aria-label="Reviewer code" placeholder="Reviewer code"><button class="btn" type="submit">Sign in</button></form><p class="sub" style="margin:10px 0 0">A real build would use proper authentication.</p><span class="err" id="e-code"></span></div>
+<div id="panel" hidden>
+<div class="row" style="align-items:center;margin-bottom:12px"><label style="display:flex;align-items:center;gap:8px;font-weight:500">Show <select id="flt" style="width:auto"><option value="">All</option><option>Submitted</option><option>In Progress</option><option>Resolved</option></select></label><button class="btn alt sm" id="out" style="margin-left:auto">Sign out</button></div>
+<div class="card tw"><table><thead><tr><th>ID</th><th>Category</th><th>Location</th><th>Date</th><th>Status</th></tr></thead><tbody id="ab"></tbody></table></div>
+</div>
+</section>
+ 
+<section class="view" id="v-guide">
+<div class="head"><h2>Recycling guide</h2><p class="why">Why it matters: sorting waste correctly keeps recyclables usable and bins from overflowing.</p></div>
+<label>Search the guide<input id="gs" type="search" placeholder="Try &quot;battery&quot; or &quot;pizza box&quot;"></label>
+<div class="chips" id="gc" role="group" aria-label="Filter by type"></div>
+<div class="guide" id="gl" aria-live="polite"></div>
+</section>
+</main>
+<div id="toast" role="status"></div>
+ 
+<script src="js/utils.js"></script>
+<script src="js/data.js"></script>
+<script src="js/router.js"></script>
+<script src="js/report.js"></script>
+<script src="js/track.js"></script>
+<script src="js/dashboard.js"></script>
+<script src="js/admin.js"></script>
+<script src="js/guide.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
